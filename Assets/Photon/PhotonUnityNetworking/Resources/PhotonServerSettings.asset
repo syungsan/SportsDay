@@ -41,6 +41,8 @@ MonoBehaviour:
   - RespawnSpaceship
   - MakeAvatar
   - SetParentAndPosition
+  - FireBullet
+  - HitBullet
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 0

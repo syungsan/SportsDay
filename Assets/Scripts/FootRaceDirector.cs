@@ -20,13 +20,11 @@ public class FootRaceDirector : MonoBehaviourPunCallbacks
 
         // ローカルプレイヤーオブジェクトを取得する
         // var player = PhotonNetwork.LocalPlayer;
-    }
 
-    /*
-    // Update is called once per frame
-    void Update()
-    {
-        
+        // ルームを作成したプレイヤーは、現在のサーバー時刻をゲームの開始時刻に設定する
+        if (PhotonNetwork.IsMasterClient)
+        {
+            PhotonNetwork.CurrentRoom.SetStartTime(PhotonNetwork.ServerTimestamp);
+        }
     }
-    */
 }

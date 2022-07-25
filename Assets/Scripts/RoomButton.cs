@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 public class RoomButton : MonoBehaviour
 {
-    private const int MAX_PLAYERS = 6;
+    private const int MAX_PLAYERS = 20;
 
     [SerializeField] private TextMeshProUGUI label = default;
 
