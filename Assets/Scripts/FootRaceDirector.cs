@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
+using UnityEngine.UI;
 
 public class FootRaceDirector : MonoBehaviourPunCallbacks
 {
@@ -13,13 +14,19 @@ public class FootRaceDirector : MonoBehaviourPunCallbacks
     {
         PhotonNetwork.IsMessageQueueRunning = true;
 
-        var position = new Vector3(Random.Range(-3f, 3f), Random.Range(-3f, 3f));
-        GameObject avatar = PhotonNetwork.Instantiate("Avatars/Avatar", position, Quaternion.identity);
+        GameObject avatar = PhotonNetwork.Instantiate("Avatars/Avatar", new Vector3(0.0f, 0.0f, 0.0f), Quaternion.identity);
 
-        // Transform[] courses = CommonFuncs.GetChildren(this.courseParentView.transform);
+        Transform[] courses = CommonFuncs.GetChildren(this.courseParentView.transform);
 
         // ローカルプレイヤーオブジェクトを取得する
-        // var player = PhotonNetwork.LocalPlayer;
+        Player player = PhotonNetwork.LocalPlayer;
+
+        Transform course = courses[player.ActorNumber - 1];
+
+        float avatarRealSizeX = avatar.GetComponent<Renderer>().bounds.size.x * avatar.transform.localScale.x;
+        float positionX = course.transform.position.x - (Camera.main.ScreenToWorldPoint(course.GetComponent<RectTransform>().sizeDelta).x + avatarRealSizeX) * 0.85f;
+        
+        avatar.transform.position = new Vector3(positionX, course.transform.position.y, avatar.transform.position.z);
 
         // ルームを作成したプレイヤーは、現在のサーバー時刻をゲームの開始時刻に設定する
         if (PhotonNetwork.IsMasterClient)
