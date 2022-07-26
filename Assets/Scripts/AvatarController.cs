@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using UnityEngine.UI;
+using UnityEngine.InputSystem;
 
 // MonoBehaviourPunCallbacksを継承して、photonViewプロパティを使えるようにする
 public class AvatarController : MonoBehaviourPunCallbacks, IPunObservable
@@ -24,6 +25,8 @@ public class AvatarController : MonoBehaviourPunCallbacks, IPunObservable
             {
                 // 入力があったら、スタミナを減少させる
                 currentStamina = Mathf.Max(0f, currentStamina - Time.deltaTime);
+                
+                
                 transform.Translate(6f * Time.deltaTime * input.normalized);
             }
             else
@@ -48,6 +51,14 @@ public class AvatarController : MonoBehaviourPunCallbacks, IPunObservable
         {
             // 他プレイヤーのアバターのスタミナを受信する
             currentStamina = (float)stream.ReceiveNext();
+        }
+    }
+
+    public void OnFire(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Performed)
+        {
+            Debug.Log("Fire");
         }
     }
 }
