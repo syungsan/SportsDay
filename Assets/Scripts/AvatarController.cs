@@ -4,6 +4,7 @@ using UnityEngine;
 using Photon.Pun;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
+using DG.Tweening;
 
 // MonoBehaviourPunCallbacksを継承して、photonViewプロパティを使えるようにする
 public class AvatarController : MonoBehaviourPunCallbacks, IPunObservable
@@ -14,6 +15,21 @@ public class AvatarController : MonoBehaviourPunCallbacks, IPunObservable
     private Image staminaBar = default;
 
     private float currentStamina = MaxStamina;
+
+    private float footStep = 30.0f;
+    private float stepDistance;
+    private float stepTime = 0.5f;
+
+    // Start is called before the first frame update
+    private void Start()
+    {
+        GameObject course = GameObject.Find($"Course{photonView.OwnerActorNr}Panel");
+
+        float avatarRealSizeX = this.GetComponent<Renderer>().bounds.size.x * this.transform.localScale.x;
+        float courseLength = (course.transform.position.x - (Camera.main.ScreenToWorldPoint(course.GetComponent<RectTransform>().sizeDelta).x + avatarRealSizeX) * 0.85f) * 2.0f;
+
+        this.stepDistance = -1.0f * (courseLength / footStep);
+    }
 
     // Update is called once per frame
     private void Update()
@@ -38,6 +54,18 @@ public class AvatarController : MonoBehaviourPunCallbacks, IPunObservable
 
         // スタミナをゲージに反映する
         staminaBar.fillAmount = currentStamina / MaxStamina;
+
+        if (photonView.IsMine)
+        {
+            if ((Mouse.current != null && Mouse.current.leftButton.wasReleasedThisFrame) ||
+                            (Joystick.current != null && Joystick.current.trigger.wasReleasedThisFrame) ||
+                            (Gamepad.current != null && Gamepad.current.rightTrigger.wasReleasedThisFrame))
+            {
+                float movedChartX = this.transform.position.x + this.stepDistance;
+                this.transform.DOMoveX(movedChartX, this.stepTime);
+            }
+        }
+            
     }
 
     void IPunObservable.OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
@@ -51,14 +79,6 @@ public class AvatarController : MonoBehaviourPunCallbacks, IPunObservable
         {
             // 他プレイヤーのアバターのスタミナを受信する
             currentStamina = (float)stream.ReceiveNext();
-        }
-    }
-
-    public void OnFire(InputAction.CallbackContext context)
-    {
-        if (context.phase == InputActionPhase.Performed)
-        {
-            Debug.Log("Fire");
         }
     }
 }
