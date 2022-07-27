@@ -5,6 +5,7 @@ using UnityEngine;
 public static class PlayerPropertiesExtensions
 {
     private const string ScoreKey = "Score";
+    private const string JoinType = "JoinType";
 
     private static readonly Hashtable propsToSet = new Hashtable();
 
@@ -20,5 +21,17 @@ public static class PlayerPropertiesExtensions
         propsToSet[ScoreKey] = player.GetScore() + value;
         player.SetCustomProperties(propsToSet);
         propsToSet.Clear();
+    }
+
+    public static void SetJoinType(this Player player, string joinType)
+    {
+        propsToSet[JoinType] = joinType;
+        player.SetCustomProperties(propsToSet);
+        propsToSet.Clear();
+    }
+
+    public static string GetJoinType(this Player player)
+    {
+        return (player.CustomProperties[JoinType] is string joinType) ? joinType : "";
     }
 }

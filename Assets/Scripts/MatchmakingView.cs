@@ -3,12 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
+using UnityEngine.UI;
+using System.Linq;
 
 public class MatchmakingView : MonoBehaviourPunCallbacks
 {
     private RoomList roomList = new RoomList();
     private List<RoomButton> roomButtonList = new List<RoomButton>();
     private CanvasGroup canvasGroup;
+
+    [SerializeField] private ToggleGroup toggleGroup = default;
 
     // Start is called before the first frame update
     void Start()
@@ -70,5 +74,13 @@ public class MatchmakingView : MonoBehaviourPunCallbacks
     {
         // ルームへの参加が失敗したら、再びルーム参加ボタンを押せるようにする
         this.canvasGroup.interactable = true;
+    }
+
+    public string GetJoinType()
+    {
+        //Get the label in activated toggles
+        string selectedLabel = toggleGroup.ActiveToggles().First().GetComponentsInChildren<Text>().First(t => t.name == "Label").text;
+
+        return selectedLabel;
     }
 }

@@ -6,12 +6,22 @@ using TMPro;
 
 public class CourseNameDisplay : MonoBehaviourPunCallbacks
 {
-    // Start is called before the first frame update
-    void Start()
+    public void CallSetCourseName(int tentativePlayerID)
     {
-        GameObject coursePanel = GameObject.Find($"Course{photonView.OwnerActorNr}Panel");
-        TextMeshProUGUI label = coursePanel.transform.GetChild(0).gameObject.GetComponent<TextMeshProUGUI>();
+        if (photonView.IsMine)
+        {
+            photonView.RPC(nameof(SetCourseName), RpcTarget.AllBuffered, tentativePlayerID);
+        }  
+    }
 
-        label.text = $"{photonView.Owner.NickName}({photonView.OwnerActorNr})";
+    [PunRPC]
+    private void SetCourseName(int tentativePlayerID)
+    {
+        GameObject courseParentView = GameObject.Find("CourseParentPanel");
+        Transform[] courses = CommonFuncs.GetChildren(courseParentView.transform);
+        Transform course = courses[tentativePlayerID];
+
+        TextMeshProUGUI label = course.GetChild(0).gameObject.GetComponent<TextMeshProUGUI>();
+        label.text = $"{photonView.Owner.NickName}({tentativePlayerID + 1})";
     }
 }

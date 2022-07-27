@@ -34,38 +34,40 @@ public class AvatarController : MonoBehaviourPunCallbacks, IPunObservable
     // Update is called once per frame
     private void Update()
     {
-        if (photonView.IsMine)
+        if (PhotonNetwork.LocalPlayer.GetJoinType() == "Player")
         {
-            var input = new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"), 0f);
-            if (input.sqrMagnitude > 0f)
+            if (photonView.IsMine)
             {
-                // 入力があったら、スタミナを減少させる
-                currentStamina = Mathf.Max(0f, currentStamina - Time.deltaTime);
-                
-                
-                transform.Translate(6f * Time.deltaTime * input.normalized);
-            }
-            else
-            {
-                // 入力がなかったら、スタミナを回復させる
-                currentStamina = Mathf.Min(currentStamina + Time.deltaTime * 2, MaxStamina);
-            }
-        }
+                var input = new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"), 0f);
+                if (input.sqrMagnitude > 0f)
+                {
+                    // 入力があったら、スタミナを減少させる
+                    currentStamina = Mathf.Max(0f, currentStamina - Time.deltaTime);
 
-        // スタミナをゲージに反映する
-        staminaBar.fillAmount = currentStamina / MaxStamina;
 
-        if (photonView.IsMine)
-        {
-            if ((Mouse.current != null && Mouse.current.leftButton.wasReleasedThisFrame) ||
-                            (Joystick.current != null && Joystick.current.trigger.wasReleasedThisFrame) ||
-                            (Gamepad.current != null && Gamepad.current.rightTrigger.wasReleasedThisFrame))
-            {
-                float movedChartX = this.transform.position.x + this.stepDistance;
-                this.transform.DOMoveX(movedChartX, this.stepTime);
+                    transform.Translate(6f * Time.deltaTime * input.normalized);
+                }
+                else
+                {
+                    // 入力がなかったら、スタミナを回復させる
+                    currentStamina = Mathf.Min(currentStamina + Time.deltaTime * 2, MaxStamina);
+                }
             }
-        }
-            
+
+            // スタミナをゲージに反映する
+            staminaBar.fillAmount = currentStamina / MaxStamina;
+
+            if (photonView.IsMine)
+            {
+                if ((Mouse.current != null && Mouse.current.leftButton.wasReleasedThisFrame) ||
+                                (Joystick.current != null && Joystick.current.trigger.wasReleasedThisFrame) ||
+                                (Gamepad.current != null && Gamepad.current.rightTrigger.wasReleasedThisFrame))
+                {
+                    float movedChartX = this.transform.position.x + this.stepDistance;
+                    this.transform.DOMoveX(movedChartX, this.stepTime);
+                }
+            }
+        }     
     }
 
     void IPunObservable.OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)

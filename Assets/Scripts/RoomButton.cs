@@ -29,6 +29,10 @@ public class RoomButton : MonoBehaviour
 
     private void OnButtonClick()
     {
+        // PlayerのJoinTypeをセット
+        string joinType = this.transform.parent.GetComponent<MatchmakingView>().GetJoinType();
+        PhotonNetwork.LocalPlayer.SetJoinType(joinType);
+
         // ルーム参加処理中は、全ての参加ボタンを押せないようにする
         this.matchmakingView.OnJoiningRoom();
 
